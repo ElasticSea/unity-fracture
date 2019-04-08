@@ -81,10 +81,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else if(Input.GetMouseButtonUp(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject() == false)
-                {
-                    m_cursorIsLocked = true;
-                }
+                m_cursorIsLocked = true;
             }
 
             if (m_cursorIsLocked)

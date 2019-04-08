@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityStandardAssets.CrossPlatformInput;
 
 namespace UnityStandardAssets.Characters.FirstPerson
@@ -80,7 +81,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else if(Input.GetMouseButtonUp(0))
             {
-                m_cursorIsLocked = true;
+                if (EventSystem.current.IsPointerOverGameObject() == false)
+                {
+                    m_cursorIsLocked = true;
+                }
             }
 
             if (m_cursorIsLocked)

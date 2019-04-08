@@ -24,7 +24,12 @@ ModelImporter:
     4300004: lock_Lod_0_0
     4300006: magazine_Lod_0_0
     9500000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AKM
+    second: {fileID: 2100000, guid: b15b8de599c4b4348b3ed39b6ab94de0, type: 2}
   materials:
     importMaterials: 1
     materialName: 1
@@ -55,7 +60,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.01
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -77,7 +82,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 0
     previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

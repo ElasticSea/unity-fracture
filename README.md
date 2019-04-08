@@ -1,3 +1,5 @@
+![](fractured_wall.gif)
+
 #### In order to have destructible geometry, what do we actually need?
 
 ##### A naive approach would be something like this:

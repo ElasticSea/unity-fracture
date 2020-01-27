@@ -52,29 +52,7 @@ namespace Project.Scripts.Fractures
                 chunk.transform.SetParent(go.transform, false);
 
                 Setup(i, chunk, fractureTool);
-                joints(chunk, jointBreakForce);
-            }
-        }
-
-        private void joints(GameObject child, float breakForce)
-        {
-            var rb = child.GetComponent<Rigidbody>();
-            var mesh = child.GetComponent<MeshFilter>().mesh;
-        
-            var overlaps = mesh.vertices
-                .Select(v => child.transform.TransformPoint(v))
-                .SelectMany(v => Physics.OverlapSphere(v, .01f))
-                .Where(o => o.GetComponent<Rigidbody>())
-                .ToSet();
-
-            foreach (var overlap in overlaps)
-            { 
-                if (overlap.gameObject != child.gameObject)
-                {
-                    var joint = overlap.gameObject.AddComponent<FixedJoint>();
-                    joint.connectedBody = rb;
-                    joint.breakForce = breakForce;
-                }
+                FractureUtils.ConnectTouchingChunks(chunk, jointBreakForce);
             }
         }
 

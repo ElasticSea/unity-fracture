@@ -74,6 +74,7 @@ namespace Project.Scripts.Fractures
                     if (rb)
                     {
                         rb.isKinematic = true;
+						overlap.GetComponent<Renderer>().material.color = Color.green;
                     }
                 }
 

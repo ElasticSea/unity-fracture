@@ -19,13 +19,11 @@ namespace Project.Scripts.Fractures
         public Color Color { get; set; } = Color.black;
         public bool HasBrokenLinks { get; private set; }
 
-        private bool Contains(ChunkNode chunkNode)
-        {
+        private bool Contains(ChunkNode chunkNode)        {
             return Neighbours.Contains(chunkNode);
         }
 
-        private void FixedUpdate()
-        {
+        private void FixedUpdate()        {
             // Kinda hacky, but otherwise the chunks slowly drift apart.
             if (frozen)
             {
@@ -34,8 +32,7 @@ namespace Project.Scripts.Fractures
             }
         }
 
-        public void Setup()
-        {
+        public void Setup()        {
             rb = GetComponent<Rigidbody>();
             Freeze();
 
@@ -61,13 +58,15 @@ namespace Project.Scripts.Fractures
             NeighboursArray = Neighbours.ToArray();
         }
 
-        private void OnJointBreak(float breakForce)
-        {
+        private void OnJointBreak(float breakForce)        {
             HasBrokenLinks = true;
+
+
+			//debug to show the brick has had some joints broken
+			gameObject.GetComponent<Renderer>().material.color = Color.red;
         }
 
-        public void CleanBrokenLinks()
-        {
+        public void CleanBrokenLinks()        {
             var brokenLinks = JointToChunk.Keys.Where(j => j == false).ToList();
             foreach (var link in brokenLinks)
             {
@@ -84,23 +83,23 @@ namespace Project.Scripts.Fractures
             HasBrokenLinks = false;
         }
 
-        private void Remove(ChunkNode chunkNode)
-        {
+        private void Remove(ChunkNode chunkNode)        {
             ChunkToJoint.Remove(chunkNode);
             Neighbours.Remove(chunkNode);
             NeighboursArray = Neighbours.ToArray();
         }
 
-        public void Unfreeze()
-        {
+        public void Unfreeze()        {
             frozen = false;
             rb.constraints = RigidbodyConstraints.None;
             rb.useGravity = true;
             rb.gameObject.layer = LayerMask.NameToLayer("Default");
+
+			//debug to show the brick has been frozen
+			gameObject.GetComponent<Renderer>().material.color = Color.yellow;
         }
 
-        private void Freeze()
-        {
+        private void Freeze()        {
             frozen = true;
             rb.constraints = RigidbodyConstraints.FreezeAll;
             rb.useGravity = false;
@@ -109,8 +108,7 @@ namespace Project.Scripts.Fractures
             forzenRot = rb.transform.rotation;
         }
 
-        private void OnDrawGizmos()
-        {
+        private void OnDrawGizmos()        {
             Gizmos.color = Color;
             Gizmos.DrawSphere(transform.TransformPoint(transform.GetComponent<Rigidbody>().centerOfMass), 0.1f);
 
@@ -125,8 +123,7 @@ namespace Project.Scripts.Fractures
             }
         }
 
-        private void OnDrawGizmosSelected()
-        {
+        private void OnDrawGizmosSelected()        {
             foreach (var node in Neighbours)
             {
                 var mesh = node.GetComponent<MeshFilter>().mesh;

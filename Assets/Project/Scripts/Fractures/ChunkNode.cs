@@ -24,15 +24,15 @@ namespace Project.Scripts.Fractures
             return Neighbours.Contains(chunkNode);
         }
 
-        private void FixedUpdate()
-        {
-            // Kinda hacky, but otherwise the chunks slowly drift apart.
-            if (frozen)
-            {
-                transform.position = frozenPos;
-                transform.rotation = forzenRot;
-            }
-        }
+    //    private void FixedUpdate()
+    //    {
+    //        // Kinda hacky, but otherwise the chunks slowly drift apart.
+    //        if (frozen)
+    //        {
+    //            transform.position = frozenPos;
+    //            transform.rotation = forzenRot;
+    //        }
+    //    }
 
         public void Setup()
         {

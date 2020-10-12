@@ -78,6 +78,8 @@ namespace Project.Scripts.Fractures
             var rigibody = chunk.AddComponent<Rigidbody>();
             rigibody.mass = totalMass / totalChunks;
 
+                  rigibody.sleepThreshold = 5;
+            
             var mc = chunk.AddComponent<MeshCollider>();
             mc.inflateMesh = true;
             mc.convex = true;

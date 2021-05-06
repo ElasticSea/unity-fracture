@@ -111,15 +111,26 @@ namespace Project.Scripts.Fractures
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color;
-            Gizmos.DrawSphere(transform.TransformPoint(transform.GetComponent<Rigidbody>().centerOfMass), 0.1f);
-
+            var worldCenterOfMass = transform.TransformPoint(transform.GetComponent<Rigidbody>().centerOfMass);
+            
+            if (IsStatic)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(worldCenterOfMass, 0.05f);
+            }
+            else
+            {
+                Gizmos.color = Color.SetAlpha(0.5f);
+                Gizmos.DrawSphere(worldCenterOfMass, 0.1f);
+            }
+            
             foreach (var joint in JointToChunk.Keys)
             {
                 if (joint)
                 {
                     var from = transform.TransformPoint(rb.centerOfMass);
                     var to = joint.connectedBody.transform.TransformPoint(joint.connectedBody.centerOfMass);
+                    Gizmos.color = Color;
                     Gizmos.DrawLine(from, to);
                 }
             }

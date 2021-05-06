@@ -36,7 +36,6 @@ namespace Project.Scripts.Fractures
 
         private Color[] colors =
         {
-            Color.red, 
             Color.blue, 
             Color.green, 
             Color.magenta, 

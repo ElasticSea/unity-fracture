@@ -46,5 +46,18 @@ namespace Project.Scripts.Utils
         {
             return new Vector3(vector3.x, vector3.y, z);
         }
+
+        public static Vector3 Multiply(this Vector3 vectorA, Vector3 vectorB)
+        {
+            return Vector3.Scale(vectorA, vectorB);
+        }
+
+        public static Vector3 Abs(this Vector3 vector)
+        {
+            var x = Mathf.Abs(vector.x);
+            var y = Mathf.Abs(vector.y);
+            var z = Mathf.Abs(vector.z);
+            return new Vector3(x, y, z);
+        }
     }
 }

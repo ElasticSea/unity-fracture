@@ -141,9 +141,9 @@ namespace Project.Scripts.Utils
                 .ToBounds();
         }
         
-        public static Bounds GetCompositeMeshBounds(this GameObject go, bool isSharedMesh = false)
+        public static Bounds GetCompositeMeshBounds(this GameObject go, bool includeInactive = false, bool isSharedMesh = false)
         {
-            var bounds = go.GetComponentsInChildren<MeshFilter>(true)
+            var bounds = go.GetComponentsInChildren<MeshFilter>(includeInactive)
                 .Select(mf =>
                 {
                     var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;

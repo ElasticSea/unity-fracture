@@ -187,11 +187,17 @@ namespace Project.Scripts.Fractures
             var rb = chunk.GetComponent<Rigidbody>();
             var mesh = chunk.GetComponent<MeshFilter>().mesh;
         
-            var overlaps = mesh.vertices
-                .Select(v => chunk.transform.TransformPoint(v))
-                .SelectMany(v => Physics.OverlapSphere(v, touchRadius))
-                .Where(o => o.GetComponent<Rigidbody>())
-                .Distinct();
+            var overlaps = new HashSet<Rigidbody>();
+            var vertices = mesh.vertices;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var worldPosition = chunk.transform.TransformPoint(vertices[i]);
+                var hits = Physics.OverlapSphere(worldPosition, touchRadius);
+                for (var j = 0; j < hits.Length; j++)
+                {
+                    overlaps.Add(hits[j].GetComponent<Rigidbody>());
+                }
+            }
 
             foreach (var overlap in overlaps)
             { 

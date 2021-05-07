@@ -77,7 +77,7 @@ namespace Project.Scripts.Utils
             float volume = 0;
             Vector3[] vertices = mesh.vertices;
             int[] triangles = mesh.triangles;
-            for (int i = 0; i < mesh.triangles.Length; i += 3)
+            for (int i = 0; i < triangles.Length; i += 3)
             {
                 var p1 = vertices[triangles[i + 0]];
                 var p2 = vertices[triangles[i + 1]];

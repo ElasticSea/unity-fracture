@@ -170,7 +170,7 @@ MonoBehaviour:
   anchor: 4
   chunks: 1000
   density: 50
-  internalStrength: 200
+  internalStrength: 100
   insideMaterial: {fileID: 2100000, guid: 78e92982a1d74d0499f21a74d4d5decf, type: 2}
   outsideMaterial: {fileID: 2100000, guid: 3b0599fb311427942b439217ca238367, type: 2}
 --- !u!1 &44452259
@@ -189,7 +189,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &44452260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,7 +205,7 @@ MonoBehaviour:
   anchor: 4
   chunks: 1000
   density: 50
-  internalStrength: 200
+  internalStrength: 100
   insideMaterial: {fileID: 2100000, guid: 55162ad2422d980459302b0ec10a20da, type: 2}
   outsideMaterial: {fileID: 2100000, guid: 3b0599fb311427942b439217ca238367, type: 2}
 --- !u!4 &44452261
@@ -351,8 +351,8 @@ MonoBehaviour:
   anchor: 4
   chunks: 1000
   density: 50
-  internalStrength: 200
-  insideMaterial: {fileID: 2100000, guid: 78e92982a1d74d0499f21a74d4d5decf, type: 2}
+  internalStrength: 100
+  insideMaterial: {fileID: 2100000, guid: 55162ad2422d980459302b0ec10a20da, type: 2}
   outsideMaterial: {fileID: 2100000, guid: 3b0599fb311427942b439217ca238367, type: 2}
 --- !u!1 &642072427
 GameObject:
@@ -706,7 +706,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1776856276
 Transform:
   m_ObjectHideFlags: 0
@@ -737,7 +737,7 @@ MonoBehaviour:
   anchor: 4
   chunks: 1000
   density: 50
-  internalStrength: 200
+  internalStrength: 100
   insideMaterial: {fileID: 2100000, guid: 78e92982a1d74d0499f21a74d4d5decf, type: 2}
   outsideMaterial: {fileID: 2100000, guid: 3b0599fb311427942b439217ca238367, type: 2}
 --- !u!1 &1875083420
@@ -749,6 +749,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1875083421}
+  - component: {fileID: 1875083422}
   m_Layer: 0
   m_Name: Fractures
   m_TagString: Untagged
@@ -774,6 +775,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1875083422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875083420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ba8750081930f40806d4be76b19d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyCodeFractureThisPairs:
+  - KeyCode: 49
+    FractureThis: {fileID: 44452260}
+  - KeyCode: 50
+    FractureThis: {fileID: 1776856277}
+  - KeyCode: 51
+    FractureThis: {fileID: 6249508}
+  - KeyCode: 52
+    FractureThis: {fileID: 519188590}
 --- !u!1 &1017753748921270135
 GameObject:
   m_ObjectHideFlags: 0
@@ -802,7 +824,7 @@ PrefabInstance:
     - target: {fileID: 2014854451310739050, guid: 360ba834b417dbc4088801393499e56f,
         type: 3}
       propertyPath: force
-      value: 10000
+      value: 2500
       objectReference: {fileID: 0}
     - target: {fileID: 2014854451310739050, guid: 360ba834b417dbc4088801393499e56f,
         type: 3}
@@ -877,7 +899,7 @@ PrefabInstance:
     - target: {fileID: 5775361127086109186, guid: 360ba834b417dbc4088801393499e56f,
         type: 3}
       propertyPath: velocity
-      value: 3000
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 8201708406659130894, guid: 360ba834b417dbc4088801393499e56f,
         type: 3}

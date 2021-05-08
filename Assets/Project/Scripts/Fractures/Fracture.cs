@@ -9,6 +9,7 @@ namespace Project.Scripts.Fractures
     {
         public static ChunkGraphManager FractureGameObject(GameObject gameObject, Anchor anchor, int seed, int totalChunks,Material insideMaterial, Material outsideMaterial, float jointBreakForce, float density)
         {
+            // Translate all meshes to one world mesh
             var mesh = GetWorldMesh(gameObject);
             
             NvBlastExtUnity.setSeed(seed);
@@ -22,48 +23,83 @@ namespace Project.Scripts.Fractures
                 (int) mesh.GetIndexCount(0)
             );
 
-            var fractureTool = new NvFractureTool();
-            fractureTool.setRemoveIslands(false);
-            fractureTool.setSourceMesh(nvMesh);
+            var meshes = FractureMeshesInNvblast(totalChunks, nvMesh);
 
-            var sites = new NvVoronoiSitesGenerator(nvMesh);
-            sites.uniformlyGenerateSitesInMesh(totalChunks);
-            fractureTool.voronoiFracturing(0, sites);
-
-            fractureTool.finalizeFracturing();
-
-            var fractureGameObject = new GameObject("Fracture");
-            var chunkMass = (mesh.Volume() * density) / totalChunks;
-            for (var i = 1; i < fractureTool.getChunkCount(); i++)
+            // Build chunks gameobjects
+            var chunkMass = mesh.Volume() * density / totalChunks;
+            var chunks = BuildChunks(insideMaterial, outsideMaterial, meshes, chunkMass);
+            
+            // Connect blocks that are touching with fixed joints
+            foreach (var chunk in chunks)
             {
-                var chunk = new GameObject("Chunk " + i);
-                chunk.transform.SetParent(fractureGameObject.transform, false);
-
-                var chunkMesh = ExtractChunkMesh(fractureTool, i);
-                Setup(chunk, insideMaterial, outsideMaterial, chunkMesh, chunkMass);
                 ConnectTouchingChunks(chunk, jointBreakForce);
             }
 
-            var bounds = gameObject.GetCompositeMeshBounds();
-            var anchoredBlocks = AnchoredBlocks(anchor, gameObject.transform, bounds);
-            foreach (var overlap in anchoredBlocks)
-            {
-                var rb = overlap.GetComponent<Rigidbody>();
-                if (rb)
-                {
-                    rb.isKinematic = true;
-                }
-            }
+            // Set anchored chunks as kinematic
+            AnchorChunks(gameObject, anchor);
 
+            var fractureGameObject = new GameObject("Fracture");
+            foreach (var chunk in chunks)
+            {
+                chunk.transform.SetParent(fractureGameObject.transform, false);
+            }
+            // Graph manager freezes/unfreezes blocks depending on whether they are connected to the graph or not
             var graphManager = fractureGameObject.AddComponent<ChunkGraphManager>();
             graphManager.Setup(fractureGameObject.GetComponentsInChildren<Rigidbody>());
             
             return graphManager;
         }
-        
-        private static IEnumerable<Collider> AnchoredBlocks(Anchor anchor, Transform meshTransform, Bounds bounds)
+
+        private static void AnchorChunks(GameObject gameObject, Anchor anchor)
         {
-            var anchoredBlocks = new HashSet<Collider>();
+            var transform = gameObject.transform;
+            var bounds = gameObject.GetCompositeMeshBounds();
+            var anchoredColliders = GetAnchoredColliders(anchor, transform, bounds);
+            
+            foreach (var collider in anchoredColliders)
+            {
+                var chunkRb = collider.GetComponent<Rigidbody>();
+                if (chunkRb)
+                {
+                    chunkRb.isKinematic = true;
+                }
+            }
+        }
+
+        private static List<GameObject> BuildChunks(Material insideMaterial, Material outsideMaterial, List<Mesh> meshes, float chunkMass)
+        {
+            return meshes.Select((chunkMesh, i) =>
+            {
+                var chunk = BuildChunk(insideMaterial, outsideMaterial, chunkMesh, chunkMass);
+                chunk.name += $" [{i}]";
+                return chunk;
+            }).ToList();
+        }
+
+        private static List<Mesh> FractureMeshesInNvblast(int totalChunks, NvMesh nvMesh)
+        {
+            var fractureTool = new NvFractureTool();
+            fractureTool.setRemoveIslands(false);
+            fractureTool.setSourceMesh(nvMesh);
+            var sites = new NvVoronoiSitesGenerator(nvMesh);
+            sites.uniformlyGenerateSitesInMesh(totalChunks);
+            fractureTool.voronoiFracturing(0, sites);
+            fractureTool.finalizeFracturing();
+
+            // Extract meshes
+            var meshCount = fractureTool.getChunkCount();
+            var meshes = new List<Mesh>(fractureTool.getChunkCount());
+            for (var i = 1; i < meshCount; i++)
+            {
+                meshes.Add(ExtractChunkMesh(fractureTool, i));
+            }
+
+            return meshes;
+        }
+
+        private static IEnumerable<Collider> GetAnchoredColliders(Anchor anchor, Transform meshTransform, Bounds bounds)
+        {
+            var anchoredChunks = new HashSet<Collider>();
             var frameWidth = .01f;
             var meshWorldCenter = meshTransform.TransformPoint(bounds.center);
             var meshWorldExtents = bounds.extents.Multiply(meshTransform.lossyScale);
@@ -72,45 +108,45 @@ namespace Project.Scripts.Fractures
             {
                 var center = meshWorldCenter - meshTransform.right * meshWorldExtents.x;
                 var halfExtents = meshWorldExtents.Abs().SetX(frameWidth);
-                anchoredBlocks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
+                anchoredChunks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
             }
             
             if (anchor.HasFlag(Anchor.Right))
             {
                 var center = meshWorldCenter + meshTransform.right * meshWorldExtents.x;
                 var halfExtents = meshWorldExtents.Abs().SetX(frameWidth);
-                anchoredBlocks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
+                anchoredChunks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
             }
             
             if (anchor.HasFlag(Anchor.Bottom))
             {
                 var center = meshWorldCenter - meshTransform.up * meshWorldExtents.y;
                 var halfExtents = meshWorldExtents.Abs().SetY(frameWidth);
-                anchoredBlocks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
+                anchoredChunks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
             }
             
             if (anchor.HasFlag(Anchor.Top))
             {
                 var center = meshWorldCenter + meshTransform.up * meshWorldExtents.y;
                 var halfExtents = meshWorldExtents.Abs().SetY(frameWidth);
-                anchoredBlocks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
+                anchoredChunks.UnionWith(Physics.OverlapBox(center, halfExtents, meshTransform.rotation));
             }
             
             if (anchor.HasFlag(Anchor.Front))
             {
                 var center = meshWorldCenter - meshTransform.forward * meshWorldExtents.z;
                 var halfExtents = meshWorldExtents.Abs().SetZ(frameWidth);
-                anchoredBlocks.UnionWith(Physics.OverlapBox(center,  halfExtents, meshTransform.rotation));
+                anchoredChunks.UnionWith(Physics.OverlapBox(center,  halfExtents, meshTransform.rotation));
             }
             
             if (anchor.HasFlag(Anchor.Back))
             {
                 var center = meshWorldCenter + meshTransform.forward * meshWorldExtents.z;
                 var halfExtents = meshWorldExtents.Abs().SetZ(frameWidth);
-                anchoredBlocks.UnionWith(Physics.OverlapBox(center,  halfExtents, meshTransform.rotation));
+                anchoredChunks.UnionWith(Physics.OverlapBox(center,  halfExtents, meshTransform.rotation));
             }
             
-            return anchoredBlocks;
+            return anchoredChunks;
         }
 
         private static Mesh ExtractChunkMesh(NvFractureTool fractureTool, int index)
@@ -162,8 +198,10 @@ namespace Project.Scripts.Fractures
             return true;
         }
 
-        private static void Setup(GameObject chunk, Material insideMaterial, Material outsideMaterial, Mesh mesh, float mass)
+        private static GameObject BuildChunk(Material insideMaterial, Material outsideMaterial, Mesh mesh, float mass)
         {
+            var chunk = new GameObject($"Chunk");
+            
             var renderer = chunk.AddComponent<MeshRenderer>();
             renderer.sharedMaterials = new[]
             {
@@ -180,6 +218,8 @@ namespace Project.Scripts.Fractures
             var mc = chunk.AddComponent<MeshCollider>();
             mc.inflateMesh = true;
             mc.convex = true;
+
+            return chunk;
         }
         
         private static void ConnectTouchingChunks(GameObject chunk, float jointBreakForce, float touchRadius = .01f)

@@ -50,6 +50,8 @@ namespace Project.Scripts.Weapon
             rb.velocity = transform.forward * Velocity;
             rb.mass = mass;
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            
+            Destroy(bullet, 5);
         }
     }
 }

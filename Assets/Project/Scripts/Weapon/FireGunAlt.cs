@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Project.Scripts.Weapon
 {
@@ -22,7 +23,9 @@ namespace Project.Scripts.Weapon
             lineGraphic.transform.localScale = new Vector3(0.01f, 1000, 0.01f);
             lineGraphic.transform.localRotation = Quaternion.Euler(90, 0, 0);
             lineGraphic.transform.SetParent(barrelEnd, false);
-            var mat = lineGraphic.GetComponent<Renderer>().material;
+            var renderer = lineGraphic.GetComponent<Renderer>();
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            var mat = renderer.material;
             mat.color = Color.red;
             mat.EnableKeyword("_EMISSION");
             mat.SetColor("_EmissionColor", Color.white);

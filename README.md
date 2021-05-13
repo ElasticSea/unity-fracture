@@ -6,7 +6,7 @@ https://user-images.githubusercontent.com/36990593/118142411-a53f6500-b40a-11eb-
 3) Connect chunks with fixed joints that break with force
 
 #### 1) Cut the mesh into smaller meshes chunks
-I started reading up on Boolean operations and Voronoi. It got complicated pretty quickly, there are a bunch of assets on the store, but either they are slow, buggy or don't work at all. Luckily I stumbled upon this forum thread https://forum.unity.com/threads/nvidia-blast.472623. Someone figured out how to use Nvidia blast library in the Unity. It gets pretty straightforward after this. You just feed the mesh to this library and receive chunks.
+I stumbled upon this forum thread https://forum.unity.com/threads/nvidia-blast.472623 where someone figured out how to use Nvidia blast library in the Unity. Feed the library with mesh (must have vertices, triangles, uvs and closed without missing any faces) to this library and receive mesh chunks.
 
 #### 2) Add rigidbody component to each chunk
 Convert each mesh chunk into a gameobject with rigidbody. Without anything holding the chunks together they crumble to the ground. Connect the chunks with fixed joints, so they stay in place. Take each chunk and its neighbors (chunks that are in close proximity or in touch) and connect them with fixed joints.
@@ -24,4 +24,4 @@ Rigidbodies will stay in place even though there is no support under them. They 
 Let's create a graph of connected chunks. Traverse graph each frame and unfreeze chunks disconnected from anchors (kinematic body)
 
 ![Chunk Graph](https://user-images.githubusercontent.com/36990593/118148705-21d54200-b411-11eb-94f6-5c654f420df9.png)
-*Anchored chunks are red, frozen chunks are black, other colors represent disconnected groups*
+*Anchored chunks are red*

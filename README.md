@@ -1,4 +1,4 @@
-![](fractured_wall.gif)
+https://user-images.githubusercontent.com/36990593/118142411-a53f6500-b40a-11eb-9942-4a6b0c1c1a42.mp4
 
 #### In order to have destructible geometry, what do we actually need?
 

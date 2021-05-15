@@ -1,6 +1,13 @@
 # Unity Fracture
 https://user-images.githubusercontent.com/36990593/118142411-a53f6500-b40a-11eb-9942-4a6b0c1c1a42.mp4
-### In order to have destructible geometry, what do we actually need?
+
+`FractureThis.cs` script takes all meshes in its gameobject and merges them. This global mesh is send to `nvblast` for fracturing into chunks. The inside part of the chunk has new UVs generated for material to be applied. Original gameobject is hidden and each chunk mesh is converted to gameobject with rigibody. Neighboring chunks are tethered with fixedjoints.
+
+### Requirements
+- Unity 2020.3 (Any previous version should work too)
+- Only x64 version of `nvblast` library is included in the repo, for other platform please visit https://forum.unity.com/threads/nvidia-blast.472623
+
+### How does this work?
 1) Cut the mesh into smaller meshes chunks
 2) Add rigidbody component to each chunk
 3) Connect chunks with fixed joints that break with force
